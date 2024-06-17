@@ -1,0 +1,11 @@
+﻿@model OffertViewModel
+
+<h1>Предложения</h1>
+<div class="row mt-5 mb-2">
+    @{
+        foreach (Food food in Model.FavFoods)
+        {
+            @Html.Partial("Foods", food)
+        }
+    }
+</div>

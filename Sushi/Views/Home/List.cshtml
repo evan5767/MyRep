@@ -1,0 +1,12 @@
+﻿@model FoodListViewModel
+<h1>Меню</h1>
+<h3>@Model.CurrCategory</h3>
+<div class="row mt-3 mb-1">
+    @{
+        foreach (Food food in Model.Foods)
+        {
+            @Html.Partial("Foods", food)
+        }
+    }
+
+</div>

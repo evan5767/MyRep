@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css" />
+</head>
+<body>
+    <header>
+        <div class="px-3 py-2 text-bg-dark border-bottom">
+            <div class="container">
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                    <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                        <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+                    </a>
+
+                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                        <li>
+                            <a href="/Offert/Index" class="nav-link text-white">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
+                                Главная
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/ShopCart/Index" class="nav-link text-white">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"></use></svg>
+                               Корзина
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/Home/Contacts" class="nav-link text-white">
+                                <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
+                                Контакты
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="col-lg-6 px-0" style="width: 100vw;">
+        <img src="~/img/bannera.jpg" alt="banner" style="width: 100%; height: auto; display: block;">
+    </div>
+
+
+        <div class="owl-controls clickable"><div class="owl-pagination"><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page active"><span class=""></span></div><div class="owl-page"><span class=""></span></div></div></div>
+    </div>
+    <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand d-md-none" href="#">
+                <svg class="bi" width="24" height="24"><use xlink:href="#aperture"></use></svg>
+                Aperture
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasLabel">Aperture</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav flex-grow-1 justify-content-between">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <svg class="bi" width="24" height="24"><use xlink:href="#aperture"></use></svg>
+                            </a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/List/pizza">Пицца</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/List/rolls">Холодные роллы</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/List/salad">Салаты</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/List/drink">Напитки</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/Home/List/WOK">WOK</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <svg class="bi" width="24" height="24"><use xlink:href="#cart"></use></svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="container">
+        <p class="float-end"><a href="#">Back to top</a></p>
+        <p>© 2024 Все права защищены · <a href="#">Соглашение</a></p>
+        <p class="nav-link"><a href="/AddFood/AddNewFood">Dev</a></p>
+    </footer>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

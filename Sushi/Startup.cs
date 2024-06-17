@@ -1,0 +1,91 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Sushi.Data;
+using Sushi.Data.Interfaces;
+using Sushi.Data.Mocks;
+using Sushi.Data.Models;
+using Sushi.Data.Repisitory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WebApplication1.Data.Interfaces;
+using WebApplication1.Data.Repository;
+
+namespace Sushi
+{
+    public class Startup
+    {
+        private IConfigurationRoot _confString;
+        public Startup(Microsoft.Extensions.Hosting.IHostingEnvironment hostEnv)
+        {
+            _confString = new ConfigurationBuilder().SetBasePath(hostEnv.ContentRootPath).AddJsonFile("dbsettings.json").Build();
+        }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddDbContext<appDBContent>(options => options.UseNpgsql(_confString.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IAllFood, FoodRepository>();
+            services.AddTransient<IAllCategory, CategoryRepository>();
+            services.AddTransient<IAllOrders, OrdersRepository>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(sp => ShopCart.GetCart(sp));
+            services.AddMvc();  
+            services.AddMemoryCache();
+            services.AddSession();
+            services.AddControllersWithViews();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSession();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Offert}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "categoryFilter",
+                    pattern: "{controller=Home}/{action=List}/{category?}", defaults: new { controller = "Home", action = "List" });
+            });
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                appDBContent content = scope.ServiceProvider.GetRequiredService<appDBContent>(); 
+                DbObjects.Initial(content);                                                                    
+            }
+        }
+    }
+}
