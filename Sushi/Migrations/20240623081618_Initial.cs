@@ -32,6 +32,7 @@ namespace Sushi.Migrations
                     Adress = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     Phone = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     Email = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    OrderId = table.Column<int>(type: "integer", nullable: false),
                     OrderTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>

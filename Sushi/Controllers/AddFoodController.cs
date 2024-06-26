@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Sushi.Data;
 using Sushi.Data.Models;
 using System.Linq;
@@ -31,36 +32,38 @@ namespace Sushi.Controllers
         {
             _appDBContent.Food.Add(food);
             _appDBContent.SaveChanges();
-            return RedirectToAction("AddNewFood");
+            return RedirectToAction("Index", "Offert");
         }
         [HttpPost]
-        public IActionResult Delete(string name)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (name != null)
+            if (id != null)
             {
-                Food food = _appDBContent.Food.FirstOrDefault(n => n.Name == name);
+                Food food = await _appDBContent.Food.FirstOrDefaultAsync(p => p.Id == id);
                 if (food != null)
                 {
                     _appDBContent.Food.Remove(food);
-                   _appDBContent.SaveChanges();
-                    
+                    await _appDBContent.SaveChangesAsync();
+                    return RedirectToAction("Index", "Offert");
                 }
             }
-            return RedirectToAction("AddNewFood");
+            return NotFound();
         }
-        public ViewResult EditFood(string name)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if(name != null)
+            if (id != null)
             {
-                Food food = _appDBContent.Food.FirstOrDefault(n => n.Name == name);
-                if (food != null)
-                {
-                    _appDBContent.Food.Remove(food);
-                    _appDBContent.SaveChanges();
-
-                }
+                Food food = await _appDBContent.Food.FirstOrDefaultAsync(p => p.Id == id);
+                if (food != null) return View(food);
             }
-            return View();
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(Food food)
+        {
+            _appDBContent.Food.Update(food);
+            await _appDBContent.SaveChangesAsync();
+            return RedirectToAction("Index", "Offert");
         }
     }
 }

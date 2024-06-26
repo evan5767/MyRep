@@ -1,7 +1,7 @@
 ﻿using Sushi.Data.Models;
 using System;
 
-namespace WebApplication1.Data.Models
+namespace Sushi.Data.Models
 {
     public class OrderDetail
     {

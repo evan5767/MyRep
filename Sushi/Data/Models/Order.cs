@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApplication1.Data.Models
+namespace Sushi.Data.Models
 {
     public class Order
     {
@@ -28,9 +28,10 @@ namespace WebApplication1.Data.Models
 
         [Display(Name = "Введите ваш E-mail")]
         [DataType(DataType.EmailAddress)]
-        [StringLength(25)]
+        [StringLength(50)]
         [Required(ErrorMessage = "Длина E-mail не менее 5 символов!")]
         public string Email { get; set; }
+        public int OrderId { get; set; }
 
         [BindNever]
         [ScaffoldColumn(false)]

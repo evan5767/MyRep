@@ -1,26 +1,27 @@
 ﻿using Sushi.Data;
 using Sushi.Data.Models;
 using System;
-using WebApplication1.Data.Interfaces;
-using WebApplication1.Data.Models;
+using Sushi.Data.Interfaces;
 
-namespace WebApplication1.Data.Repository
+
+namespace Sushi.Data.Repository
 {
     public class OrdersRepository : IAllOrders
     {
-        private readonly appDBContent appDBContent;
+        private readonly appDBContent _appDBContent;
         private readonly ShopCart shopCart;
 
         public OrdersRepository(appDBContent appDBContent, ShopCart shopCart)
         {
-            this.appDBContent = appDBContent;
+            this._appDBContent = appDBContent;
             this.shopCart = shopCart;
         }
 
         public void CreateOrder(Order order)
         {
             order.OrderTime = DateTime.Now;
-            appDBContent.Order.Add(order);
+            _appDBContent.Order.Add(order);
+            _appDBContent.SaveChanges();
 
             var items = shopCart.ListShopItems;
 
@@ -32,9 +33,9 @@ namespace WebApplication1.Data.Repository
                     OrderId = order.Id,
                     Price = (uint)el.Food.Price
                 };
-                appDBContent.OrderDetail.Add(orderDetail);
+                _appDBContent.OrderDetail.Add(orderDetail);
             }
-            appDBContent.SaveChanges();
+            _appDBContent.SaveChanges();
         }
     }
 }

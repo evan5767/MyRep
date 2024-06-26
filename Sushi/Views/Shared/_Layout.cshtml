@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManage
+@{
+    var isAdmin = User.IsInRole("admin");
+    var isUser = User.IsInRole("user");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,7 +32,7 @@
                         <li>
                             <a href="/ShopCart/Index" class="nav-link text-white">
                                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#table"></use></svg>
-                               Корзина
+                                Корзина
                             </a>
                         </li>
                         <li>
@@ -33,6 +40,41 @@
                                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
                                 Контакты
                             </a>
+                        </li>
+                    </ul>
+                    <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                            <li>
+                                <p style="margin-right: 15px; margin-top: 30px; color: slateblue;">@User.Identity.Name</p>
+                            </li>
+                            <li>
+                                <form method="post" asp-controller="Account" asp-action="Logout">
+                                    <input type="submit" value="Выход" style="display: inline; margin-top: 30px;" />
+                                </form>
+                            </li>
+
+                                @if (isAdmin)
+                                {
+                                <li>
+                                    <a href="/AddFood/AddNewFood" class="nav-link text-white">
+                                        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
+                                        Управление
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/ViewOrder/OrderDetails" class="nav-link text-white">
+                                        <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
+                                        Заказы
+                                    </a>
+                                </li>
+                                }
+                            }
+                            else
+                            {
+                            <a asp-controller="Account" asp-action="Login" style="margin-right: 10px;">Вход</a>
+                            <a asp-controller="Account" asp-action="Register">Регистрация</a>
+                            }
                         </li>
                     </ul>
                 </div>
@@ -45,7 +87,7 @@
     </div>
 
 
-        <div class="owl-controls clickable"><div class="owl-pagination"><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page active"><span class=""></span></div><div class="owl-page"><span class=""></span></div></div></div>
+    <div class="owl-controls clickable"><div class="owl-pagination"><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page"><span class=""></span></div><div class="owl-page active"><span class=""></span></div><div class="owl-page"><span class=""></span></div></div></div>
     </div>
     <nav class="navbar navbar-expand-md bg-dark sticky-top border-bottom" data-bs-theme="dark">
         <div class="container">
@@ -92,8 +134,9 @@
 
     <footer class="container">
         <p class="float-end"><a href="#">Back to top</a></p>
-        <p>© 2024 Все права защищены · <a href="#">Соглашение</a></p>
-        <p class="nav-link"><a href="/AddFood/AddNewFood">Dev</a></p>
+        <p>© 2024 Все права защищены</p>
+
+
     </footer>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

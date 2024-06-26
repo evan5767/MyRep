@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Sushi.Data.Models;
 using System.Collections.Generic;
-using WebApplication1.Data.Models;
 
 namespace Sushi.Data
 {

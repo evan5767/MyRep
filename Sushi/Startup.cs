@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,12 +12,11 @@ using Sushi.Data.Interfaces;
 using Sushi.Data.Mocks;
 using Sushi.Data.Models;
 using Sushi.Data.Repisitory;
+using Sushi.Data.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApplication1.Data.Interfaces;
-using WebApplication1.Data.Repository;
 
 namespace Sushi
 {
@@ -38,13 +38,17 @@ namespace Sushi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<appDBContent>(options => options.UseNpgsql(_confString.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(_confString.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationContext>()
+                .AddDefaultTokenProviders();
             services.AddTransient<IAllFood, FoodRepository>();
             services.AddTransient<IAllCategory, CategoryRepository>();
             services.AddTransient<IAllOrders, OrdersRepository>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped(sp => ShopCart.GetCart(sp));
-            services.AddMvc();  
+            services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
             services.AddControllersWithViews();
@@ -69,7 +73,7 @@ namespace Sushi
             app.UseSession();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -83,8 +87,8 @@ namespace Sushi
             });
             using (var scope = app.ApplicationServices.CreateScope())
             {
-                appDBContent content = scope.ServiceProvider.GetRequiredService<appDBContent>(); 
-                DbObjects.Initial(content);                                                                    
+                appDBContent content = scope.ServiceProvider.GetRequiredService<appDBContent>();
+                DbObjects.Initial(content);
             }
         }
     }

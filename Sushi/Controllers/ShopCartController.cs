@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Sushi.Data;
 using Sushi.Data.Interfaces;
 using Sushi.Data.Models;
+using Sushi.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApplication1.ViewModels;
 
 namespace Sushi.Controllers
 {

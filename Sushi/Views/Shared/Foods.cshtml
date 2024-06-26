@@ -1,4 +1,9 @@
 ﻿@model Food
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManage
+@{
+    var isAdmin = User.IsInRole("admin");
+}
 
 <div class="col-lg-3">
     <img class="img-thumbnail" src="@Model.Img" alt="@Model.Name" />
@@ -6,4 +11,11 @@
     <p>@Model.Description</p>
     <p>Цена: @Model.Price.ToString("c")</p>
     <p><a class="btn btn-warning" asp-controller="ShopCart" asp-action="addToCart" asp-route-Id="@Model.Id">B корзину</a></p>
+    @if (isAdmin)
+    {
+        <a class="btn btn-primary mr-2" asp-controller="AddFood" asp-action="Edit" asp-route-id="@Model.Id">Изменить</a>
+        <form asp-controller="AddFood" asp-action="Delete" method="post" asp-route-id="@Model.Id" style="display: inline;">
+            <input type="submit" value="Удалить" class="btn btn-danger" />
+        </form>
+    }
 </div>

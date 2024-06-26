@@ -38,27 +38,8 @@
         <input type="submit" value="Добавить" />
     </p>
 </form>
-<td>
-    <h2>Удалить товар</h2>
-    <form asp-controller="AddFood" asp-action="Delete" method="post">
-        <p>
-            <label asp-for="Name">Введите точное имя товара</label><br />
-            <input type="text" asp-for="Name" />
-        </p>
-        <p>
-            <input type="submit" value="Удалить" />
-        </p>
-        </form>
-</td>
-<td>
-    <h2>Изменить карточку товара</h2>
-    <form asp-controller="AddFood" asp-action="EditFood" method="post">
-        <p>
-            <label asp-for="Name">Введите точное имя товара</label><br />
-            <input type="text" asp-for="Name" />
-        </p>
-        <p>
-            <input type="submit" value="Редактировать" />
-        </p>
-    </form>
+<form method="post" asp-controller="Users" asp-action="Index">
+    <input type="submit" value="Пользователи" class="btn btn-warning" />
+</form>
+
 </td>

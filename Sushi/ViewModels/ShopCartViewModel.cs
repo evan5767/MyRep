@@ -1,10 +1,10 @@
 ﻿
 using Sushi.Data.Models;
 
-namespace WebApplication1.ViewModels
+namespace Sushi.ViewModels
 {
     public class ShopCartViewModel
     {
-        public ShopCart shopCart {  get; set; }
+        public ShopCart shopCart { get; set; }
     }
 }

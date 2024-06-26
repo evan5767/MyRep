@@ -1,0 +1,39 @@
+﻿@using Sushi.ViewModels
+@model IEnumerable<ViewOrderViewModel>
+
+<h2>Текущие заказы</h2>
+
+@foreach (var order in Model)
+{
+    <div>
+        <h4>Заказ: @order.OrderId</h4>
+        <p><b>Время:</b>: @order.OrderTime</p>
+        <p><b>Клиент:</b> @order.Name</p>
+        <p><b>Адрес:</b>: @order.Adress</p>
+        <table class="table">
+            <h5>Детали:</h5>
+            <tbody>
+                @foreach (var item in order.OrderDetails)
+                {
+                    <tr>
+                        <td>@item.FoodName</td>
+                        <td>@item.Price.ToString("c")</td>
+                    </tr>
+                }
+                @{
+                    uint sumProd = 0;
+                }
+                @foreach (var sum in order.OrderDetails)
+                {
+                    sumProd += sum.Price;
+                }
+            </tbody>
+        </table>
+        <p><b>Итого:</b> @sumProd.ToString("c")</p>
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" name="id" value="@order.OrderId" />
+        <input type="submit" value="Выполнен" class="btn btn-primary" />
+    </form>
+    <hr />
+}

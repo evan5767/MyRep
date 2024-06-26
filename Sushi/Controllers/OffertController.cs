@@ -22,5 +22,10 @@ namespace Sushi.Controllers
 
             return View(homeFoods);
         }
+
+        public ViewResult Cabin()
+        {
+            return View();
+        }
     }
 }

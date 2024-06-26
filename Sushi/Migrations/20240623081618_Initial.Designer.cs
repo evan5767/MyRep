@@ -10,7 +10,7 @@ using Sushi.Data;
 namespace Sushi.Migrations
 {
     [DbContext(typeof(appDBContent))]
-    [Migration("20240516145517_Initial")]
+    [Migration("20240623081618_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,30 +71,7 @@ namespace Sushi.Migrations
                     b.ToTable("Food");
                 });
 
-            modelBuilder.Entity("Sushi.Data.Models.ShopCartItems", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int?>("FoodId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ShopCartTd")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FoodId");
-
-                    b.ToTable("ShopCartItems");
-                });
-
-            modelBuilder.Entity("WebApplication1.Data.Models.Order", b =>
+            modelBuilder.Entity("Sushi.Data.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,6 +93,9 @@ namespace Sushi.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -129,7 +109,7 @@ namespace Sushi.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("WebApplication1.Data.Models.OrderDetail", b =>
+            modelBuilder.Entity("Sushi.Data.Models.OrderDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,6 +134,29 @@ namespace Sushi.Migrations
                     b.ToTable("OrderDetail");
                 });
 
+            modelBuilder.Entity("Sushi.Data.Models.ShopCartItems", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("FoodId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ShopCartTd")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FoodId");
+
+                    b.ToTable("ShopCartItems");
+                });
+
             modelBuilder.Entity("Sushi.Data.Models.Food", b =>
                 {
                     b.HasOne("Sushi.Data.Models.Category", "Category")
@@ -161,6 +164,25 @@ namespace Sushi.Migrations
                         .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Sushi.Data.Models.OrderDetail", b =>
+                {
+                    b.HasOne("Sushi.Data.Models.Food", "Food")
+                        .WithMany()
+                        .HasForeignKey("FoodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Sushi.Data.Models.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Sushi.Data.Models.ShopCartItems", b =>
@@ -172,31 +194,12 @@ namespace Sushi.Migrations
                     b.Navigation("Food");
                 });
 
-            modelBuilder.Entity("WebApplication1.Data.Models.OrderDetail", b =>
-                {
-                    b.HasOne("Sushi.Data.Models.Food", "Food")
-                        .WithMany()
-                        .HasForeignKey("FoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebApplication1.Data.Models.Order", "Order")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Food");
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("Sushi.Data.Models.Category", b =>
                 {
                     b.Navigation("Foods");
                 });
 
-            modelBuilder.Entity("WebApplication1.Data.Models.Order", b =>
+            modelBuilder.Entity("Sushi.Data.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
                 });

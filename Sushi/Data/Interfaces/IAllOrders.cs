@@ -1,6 +1,6 @@
-﻿using WebApplication1.Data.Models;
+﻿using Sushi.Data.Models;
 
-namespace WebApplication1.Data.Interfaces
+namespace Sushi.Data.Interfaces
 {
     public interface IAllOrders
     {
