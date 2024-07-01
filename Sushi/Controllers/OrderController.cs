@@ -13,20 +13,19 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
 using static System.Net.Mime.MediaTypeNames;
+using Sushi.Data.Repisitory;
 
 namespace WebApplication1.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly IAllOrders allOrders;
-        private readonly ShopCart shopCart;
-        private readonly appDBContent _appDBContent;
+        private readonly IOrders _orderService;
+        private readonly ShopCart _shopCart;
 
-        public OrderController(IAllOrders allOrders, ShopCart shopCart, appDBContent appDBContent)
+        public OrderController(IOrders allOrders, ShopCart shopCart)
         {
-            this.allOrders = allOrders;
-            this.shopCart = shopCart;
-            _appDBContent = appDBContent;
+            this._orderService = allOrders;
+            this._shopCart = shopCart;
         }
 
         public IActionResult Checkout()
@@ -36,23 +35,51 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult Checkout(Order order)
         {
-            shopCart.ListShopItems = shopCart.GetShopItems();
-
-            if (shopCart.ListShopItems.Count == 0)
+            _shopCart.ListShopItems = _shopCart.GetShopItems();
+            if (_shopCart.ListShopItems == null)
             {
                 ModelState.AddModelError("", "В корзине нет товаров!");
             }
-
             if (ModelState.IsValid)
             {
-                allOrders.CreateOrder(order);
+                _orderService.CreateOrder(order);
                 return RedirectToAction("Complete", new { email = order.Email });
             }
-
             return View(order);
         }
 
-        private string GenerateOrderEmailBody(IEnumerable<ViewOrderViewModel> orders)
+        public async Task<IActionResult> ShowOrder()
+        {
+            var orders = await _orderService.GetOrders();
+            if (orders == null)
+            {
+                return NotFound();
+            }
+            var viewModel = orders.Select(o => new ShowOrderViewModel
+            {
+                Name = o.Name,
+                Adress = o.Adress,
+                OrderId = o.Id,
+                OrderTime = o.OrderTime,
+                OrderDetails = o.OrderDetails.Select(od => new OrderDetailViewModel
+                {
+                    FoodId = od.FoodId,
+                    FoodName = od.Food.Name,
+                    Price = od.Price
+                }).ToList()
+            }).ToList();
+
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _orderService.DeleteOrder(id);
+
+            return RedirectToAction("ShowOrder");
+        }
+
+        private string GenerateOrderEmailBody(IEnumerable<ShowOrderViewModel> orders)
         {
             var stringBuilder = new StringBuilder();
 
@@ -82,14 +109,10 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Complete(string email)
         {
-            var order = await _appDBContent.Order
-                .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Food)
-                .FirstOrDefaultAsync(o => o.Email == email);
-
-            var emailBody = GenerateOrderEmailBody(new List<ViewOrderViewModel>
+            var order = await _orderService.GetOrder(email);
+            var emailBody = GenerateOrderEmailBody(new List<ShowOrderViewModel>
             {
-                new ViewOrderViewModel
+                new ShowOrderViewModel
                 {
                     OrderId = order.OrderId,
                     OrderTime = order.OrderTime,
@@ -106,19 +129,11 @@ namespace WebApplication1.Controllers
 
             var message = new MimeMessage();
 
-            //от кого отправляем и заголовок
-
             message.From.Add(new MailboxAddress("Информация о заказе", "wania1999@yahoo.com"));
-
-            //кому отправляем
 
             message.To.Add(new MailboxAddress(order.Name, order.Email));
 
-            //тема письма
-
             message.Subject = "Спасибо за заказ!";
-
-            //тело письма
 
             message.Body = new TextPart("plain")
 
@@ -132,11 +147,7 @@ namespace WebApplication1.Controllers
 
             {
 
-                //Указываем smtp сервер почты и порт
-
                 client.Connect("smtp.mail.yahoo.com", 587, false);
-
-                //Указываем свой Email адрес и пароль приложения
 
                 client.Authenticate("wania1999@yahoo.com", "cdkbqnzkfeikjowd");
 
@@ -148,6 +159,6 @@ namespace WebApplication1.Controllers
             ViewBag.Message = "Заказ успешно обработан!";
             return View();
         }
-        
+
     }
 }

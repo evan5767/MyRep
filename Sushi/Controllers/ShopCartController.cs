@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sushi.Data;
 using Sushi.Data.Interfaces;
 using Sushi.Data.Models;
+using Sushi.Data.Repisitory;
 using Sushi.ViewModels;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,16 +13,15 @@ namespace Sushi.Controllers
 {
     public class ShopCartController : Controller
     {
-        private readonly IAllFood _foodRepository;
+        private readonly IFood _foodRepository;
         private readonly ShopCart _shopCart;
-        private readonly appDBContent _appDBcontent;
-        public ShopCartController(IAllFood foodRep, ShopCart shopCart)
+        public ShopCartController(IFood foodRep, ShopCart shopCart)
         {
             _foodRepository = foodRep;
             _shopCart = shopCart;
         }
 
-        public ViewResult Index()// данная функция будет позвоолять нам вызвать определенный html шаблон
+        public ViewResult Index()
         {
             var items = _shopCart.GetShopItems();
             _shopCart.ListShopItems = items;
@@ -32,16 +33,15 @@ namespace Sushi.Controllers
 
             return View(obj);
         }
-
-        public RedirectToActionResult addToCart(int id) 
+        [HttpPost]
+        public JsonResult addToCart(int id) 
         {
-           
-            var item = _foodRepository.Food.FirstOrDefault(x => x.Id == id);
-            if (item != null)
+            var item = _foodRepository.GetObjectFood(id);
+            if(item != null)
             {
                 _shopCart.AddToCart(item);
             }
-            return RedirectToAction("Index"); 
+            return Json(" ");
         }
         [HttpPost]
         public RedirectToActionResult Delete(int id)

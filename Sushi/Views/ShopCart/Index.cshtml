@@ -3,29 +3,38 @@
 @model ShopCartViewModel
 
 <div class="container">
-    @foreach (var el in Model.shopCart.ListShopItems)
+    @if (Model.shopCart.ListShopItems.Count == 0)
     {
-        <div calss="alert alert-warning mt-3">
-            <b>Товар:</b> @el.Food.Name<br />
-            <b>Цена:</b> @el.Food.Price.ToString("c")
-            <form asp-controller="ShopCart" asp-action="Delete" method="post" asp-route-id="@el.Id">
-                <input type="submit" value="Удалить" />
-            </form>
+        <div class="alert alert-info mt-3">
+            Ваша корзина пуста.
+        </div>
+    }
+    else
+    {
+        @foreach (var el in Model.shopCart.ListShopItems)
+        {
+            <div calss="alert alert-warning mt-3">
+                <b>Товар:</b> @el.Food.Name<br />
+                <b>Цена:</b> @el.Food.Price.ToString("c")
+                <form asp-controller="ShopCart" asp-action="Delete" method="post" asp-route-id="@el.Id">
+                    <input type="submit" value="Удалить" />
+                </form>
+            </div>
+
+        }
+
+        int sumProd = 0;
+
+        @foreach (var sum in Model.shopCart.ListShopItems)
+        {
+            sumProd += sum.Food.Price;
+        }
+        <hr />
+        <div>
+            <b>Итого: @sumProd.ToString("c")</b>
         </div>
 
+        <hr />
+        <a class="btn btn-danger" asp-controller="Order" asp-action="Checkout">Оплатить</a>
     }
-    @{
-        int sumProd = 0;
-    }
-    @foreach (var sum in Model.shopCart.ListShopItems)
-    {
-       sumProd += sum.Food.Price;
-    }
-    <hr />
-    <div>
-        <b>Итого: @sumProd.ToString("c")</b>
-    </div>
-    
-    <hr />
-    <a class="btn btn-danger" asp-controller="Order" asp-action="Checkout">Оплатить</a>
 </div>

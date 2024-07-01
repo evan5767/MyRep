@@ -12,9 +12,5 @@ namespace Sushi.Data.Models
         public bool ToViewHome { get; set; }
         public virtual Category Category { get; set; }
 
-        internal static object Where(Func<object, object> value)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

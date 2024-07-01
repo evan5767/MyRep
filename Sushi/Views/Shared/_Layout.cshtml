@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Identity;
 @inject UserManager<User> UserManage
 @{
     var isAdmin = User.IsInRole("admin");
@@ -36,7 +36,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/Home/Contacts" class="nav-link text-white">
+                            <a href="/Food/Contacts" class="nav-link text-white">
                                 <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
                                 Контакты
                             </a>
@@ -57,13 +57,13 @@
                                 @if (isAdmin)
                                 {
                                 <li>
-                                    <a href="/AddFood/AddNewFood" class="nav-link text-white">
+                                    <a href="/Food/Create" class="nav-link text-white">
                                         <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
                                         Управление
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/ViewOrder/OrderDetails" class="nav-link text-white">
+                                    <a href="/Order/ShowOrder" class="nav-link text-white">
                                         <svg class="bi d-block mx-auto mb-1" width="24" height="24"><use xlink:href="#grid"></use></svg>
                                         Заказы
                                     </a>
@@ -138,8 +138,10 @@
 
 
     </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    
 </body>
 </html>

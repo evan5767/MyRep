@@ -6,9 +6,9 @@ namespace Sushi.Controllers
 {
     public class OffertController : Controller
     {
-        private readonly IAllFood _foodRepository;
+        private readonly IFood _foodRepository;
 
-        public OffertController(IAllFood foodRep)
+        public OffertController(IFood foodRep)
         {
             _foodRepository = foodRep;
         }
@@ -21,11 +21,6 @@ namespace Sushi.Controllers
             };
 
             return View(homeFoods);
-        }
-
-        public ViewResult Cabin()
-        {
-            return View();
         }
     }
 }

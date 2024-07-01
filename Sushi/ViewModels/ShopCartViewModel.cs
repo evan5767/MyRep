@@ -1,4 +1,5 @@
 ﻿
+
 using Sushi.Data.Models;
 
 namespace Sushi.ViewModels

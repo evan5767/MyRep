@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,14 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sushi.Data;
 using Sushi.Data.Interfaces;
-using Sushi.Data.Mocks;
 using Sushi.Data.Models;
 using Sushi.Data.Repisitory;
 using Sushi.Data.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Sushi.Middleware;
+using System.Net;
 
 namespace Sushi
 {
@@ -42,12 +38,21 @@ namespace Sushi
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationContext>()
                 .AddDefaultTokenProviders();
-            services.AddTransient<IAllFood, FoodRepository>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<UserManager<User>>();
+            services.AddTransient<IFood, FoodRepository>();
             services.AddTransient<IAllCategory, CategoryRepository>();
-            services.AddTransient<IAllOrders, OrdersRepository>();
-
+            services.AddTransient<IOrders, OrdersRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped(sp => ShopCart.GetCart(sp));
+            services.AddScoped(sp =>
+            {
+                var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+                var userManager = sp.GetRequiredService<UserManager<User>>();
+                var context = sp.GetRequiredService<appDBContent>();
+
+                return ShopCart.GetCart(sp);
+            });
+            //services.AddScoped(sp => ShopCart.GetCart(sp));
             services.AddMvc();
             services.AddMemoryCache();
             services.AddSession();
@@ -67,7 +72,7 @@ namespace Sushi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+           
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSession();
@@ -75,6 +80,8 @@ namespace Sushi
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

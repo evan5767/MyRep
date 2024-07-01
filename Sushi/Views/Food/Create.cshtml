@@ -1,16 +1,19 @@
 ﻿@{
     ViewBag.Title = "Добавить товар на сайт";
 }
-@model Food
+
+@model CreateFoodViewModel
 <h2>Добавление нового товара</h2>
-<form asp-action="AddNewFood" asp-controller="AddFood">
+<form asp-action="Create" asp-controller="Food">
     <p>
         <label asp-for="Name">Наименование</label><br />
         <input type="text" asp-for="Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </p>
     <p>
         <label asp-for="Description">Описание</label><br />
         <input type="text" asp-for="Description" />
+        <span asp-validation-for="Description" class="text-danger"></span>
     </p>
     <p>
         <label asp-for="Category">Выберите категорию</label><br />
@@ -25,10 +28,12 @@
     <p>
         <label asp-for="Price">Цена</label><br />
         <input type="number" asp-for="Price" />
+        <span asp-validation-for="Price" class="text-danger"></span>
     </p>
     <p>
         <label asp-for="Img">Путь к изображению /img/...</label><br />
         <input type="text" asp-for="Img" />
+        <span asp-validation-for="Img" class="text-danger"></span>
     </p>
     <p>
         <label asp-for="ToViewHome">Показать в рекомендациях?</label><br />
@@ -41,5 +46,8 @@
 <form method="post" asp-controller="Users" asp-action="Index">
     <input type="submit" value="Пользователи" class="btn btn-warning" />
 </form>
-
-</td>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

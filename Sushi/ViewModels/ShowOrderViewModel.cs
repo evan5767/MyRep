@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Sushi.ViewModels
 {
-    public class ViewOrderViewModel
+    public class ShowOrderViewModel
     {
         public string Name { get; set; }
         public string Adress {  get; set; }
